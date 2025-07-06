@@ -31,7 +31,7 @@ jobs:
             asv
             mamba<=1.5.10
 
-      - name: Run benchmarks
+      - name: Run and publish benchmarks
         shell: bash -l {0}
         id: benchmark
         env:
@@ -42,14 +42,10 @@ jobs:
           ASV_SKIP_SLOW: 1
         run: |
           set -x
+          mkdir public
           cd parcels_bm_run/asv_bench
           asv machine --yes
           asv run
-
-      - name: Publish benchmarks to HTML
-        run: |
-          mkdir public
-          cd parcels_bm_run/asv_bench
           asv publish --html-dir ../../public
 
       - name: Setup Pages
