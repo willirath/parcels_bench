@@ -16,13 +16,43 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: oceanparcels/parcels
-          ref: main
+          ref: asv
+          fetch-depth: 0
           path: parcels_bm_run
-      - name: Do something in the repo and store results
+
+      - name: Set up conda environment
+        uses: mamba-org/setup-micromamba@v2
+        with:
+          micromamba-version: "1.5.10-0"
+          environment-name: parcels-dev
+          cache-environment: true
+          cache-environment-key: "${{runner.os}}-${{runner.arch}}-py${{env.PYTHON_VERSION}}-${{env.TODAY}}-${{hashFiles(env.CONDA_ENV_FILE)}}-benchmark"
+          create-args: >-
+            python-build
+            asv
+            mamba<=1.5.10
+
+      - name: Run benchmarks
+        shell: bash -l {0}
+        id: benchmark
+        env:
+          OPENBLAS_NUM_THREADS: 1
+          MKL_NUM_THREADS: 1
+          OMP_NUM_THREADS: 1
+          ASV_FACTOR: 1.5
+          ASV_SKIP_SLOW: 1
+        run: |
+          set -x
+          cd parcels_bm_run/asv_bench
+          asv machine --yes
+          asv run main
+
+      - name: Publish benchmarks to HTML
         run: |
           mkdir public
-          cd parcels_bm_run
-          git log -1 --pretty=format:'%H' > ../public/result.txt
+          cd parcels_bm_run/asv_bench
+          asv publish --html-dir ../../public
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
