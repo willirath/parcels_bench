@@ -17,7 +17,6 @@ jobs:
         with:
           repository: oceanparcels/parcels
           ref: asv
-          fetch-depth: 0
           path: parcels_bm_run
 
       - name: Set up conda environment
