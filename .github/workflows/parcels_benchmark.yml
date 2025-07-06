@@ -45,7 +45,7 @@ jobs:
           set -x
           cd parcels_bm_run/asv_bench
           asv machine --yes
-          asv run main
+          asv run
 
       - name: Publish benchmarks to HTML
         run: |
