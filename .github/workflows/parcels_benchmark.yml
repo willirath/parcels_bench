@@ -18,8 +18,8 @@ jobs:
           mkdir public
           git log -1 --pretty=format:'%H' > public/result.txt
 
-      - name: Setup Pages action
-        uses: actions/setup-pages@v3
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v3
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v1
